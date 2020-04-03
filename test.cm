@@ -1,0 +1,14 @@
+string _str= "haha";
+double x2 = 12.5e9;
+double p_3 = .178;
+
+x2 = 7/p_3;
+
+//a problematic function
+void add(int a, int b){/*multicomment
+test
+*/
+    return a+b;//single comment test
+}
+
+int array[10] = {0,1,2,4};
