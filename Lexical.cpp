@@ -1,4 +1,8 @@
 #include "Lexical.hpp"
+// for debug
+inline void out(const char* str){
+    std::cout << str << std::endl;
+}
 
 std::vector<ReservedWord> Dict={{"if",IF},{"else",ELSE},
       {"int",INT},{"double",DOUBLE},{"string", STRING},
@@ -91,8 +95,8 @@ TokenType getToken(std::ifstream &f){
     StateType state = START;
     TokenType thisToken;
     while(state != DONE){
-        if(f.peek()!=EOF){
-            nextch = f.peek();
+        nextch = f.peek();
+        if(nextch!=EOF){
             if(nextch == ' ' || nextch == '\n' || nextch == '\t'){
                 if(state == START){
                     f.get();
@@ -100,7 +104,7 @@ TokenType getToken(std::ifstream &f){
                 }
             }
         }
-        else{
+        else if(state == START){            
             return ENDOFFILE;
         }
         switch (state){
@@ -116,6 +120,7 @@ TokenType getToken(std::ifstream &f){
                     token.push_back(nextch);                    
                 }
                 else if(nextch == '.'){
+                    state = INDOUBLE;
                     token.push_back('0');
                     token.push_back(nextch);
                 }
@@ -149,8 +154,8 @@ TokenType getToken(std::ifstream &f){
                         default:
                             return ERROR;
                     }
-                    f.get();
                 }
+                f.get();
             }
             break;
 
@@ -212,7 +217,7 @@ TokenType getToken(std::ifstream &f){
             break;
 
             case INID:{
-                if(isalpha(nextch) || isdigit(nextch) || nextch=='_'){
+                if(isalpha(nextch) || isdigit(nextch) || nextch =='_'){
                     f.get();
                     token.push_back(nextch);
                 }
