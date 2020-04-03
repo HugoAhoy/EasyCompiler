@@ -8,7 +8,7 @@
 #include "vector"
 #include "cstring"
 
-extern bool PRINTTOKEN = false;
+extern bool PRINTTOKEN;
 
 // const int MAXTOKENLEN = 40;
 
@@ -27,11 +27,11 @@ typedef enum{
 
 /* states in scanner DFA */
 typedef enum{
-    START,INCOMMENT,INNUM,INID,INSTRING,INDOUBLE,OVERORCOMMENT,ASSIGNOREQ,LTORLEQ,GTORGEQ,INNEQ,DONE}
+    START,INCOMMENT,INNUM,INID,INSTRING,INDOUBLE,OVERORCOMMENT,ASSIGNOREQ,LTORLEQ,GTORGEQ,INNEQ,TRANSEFERMEANING,INSCIENTIFIC,DONE}
    StateType;
 
 typedef struct
-    { char* str;
+    { char const *str;
       TokenType tokentype;
     } ReservedWord;
 
