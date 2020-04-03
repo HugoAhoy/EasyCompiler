@@ -19,30 +19,12 @@ static void printToken(const std::vector<char> &t, TokenType tt){
         case RETURN:std::cout<< "reserved word: return\n";break;
         case VOID:std::cout<< "reserved word: void\n";break;
         case WHILE:std::cout<< "reserved word: while\n";break;
-        case ID:std::cout<< "ID, name = ";
-            for(int i = 0; i < s; i++){
-                std::cout << t[i];
-            }
-            std::cout << std:: endl;
-            break;
-        case INT_NUM:std::cout<< "integer number: ";
-            for(int i = 0; i < s; i++){
-                std::cout << t[i];
-            }
-            std::cout << std:: endl;
-            break;
-        case CONST_STRING:std::cout<< "string constant: ";
-            for(int i = 0; i < s; i++){
-                std::cout << t[i];
-            }
-            std::cout << std:: endl;
-            break;
-        case DOUBLE_NUM:std::cout<< "double number: ";
-            for(int i = 0; i < s; i++){
-                std::cout << t[i];
-            }
-            std::cout << std:: endl;
-            break;
+        case ID:std::cout<< "ID, name = ";break;
+        case INT_NUM:std::cout<< "integer number: ";break;
+        case CONST_STRING:std::cout<< "string constant: ";break;
+        case DOUBLE_NUM:std::cout<< "double number: ";break;
+        case MULTICOMMENT:std::cout<< "multi comment: ";break;
+        case SINGLECOMMENT:std::cout<< "single comment: ";break;
         case ASSIGN:std::cout<< "=\n";break;
         case EQ:std::cout<< "==\n";break;
         case LT:std::cout<< "<\n";break;
@@ -64,6 +46,18 @@ static void printToken(const std::vector<char> &t, TokenType tt){
         case COMMA:std::cout<< ",\n";break;
         default:/*正常不会显示*/
             std::cout<< "invisible token\n";break;
+    }
+    switch (tt)
+    {
+    case ID:case INT_NUM:case CONST_STRING:case DOUBLE_NUM:
+    case MULTICOMMENT: case SINGLECOMMENT:
+        for(int i = 0; i < s; i++){
+            std::cout << t[i];
+        }
+        std::cout << std:: endl;
+        break;    
+    default:
+        break;
     }
 }
 
@@ -132,7 +126,7 @@ TokenType getToken(std::ifstream &f){
                         }
                         break;
 
-                        case '/':state = OVERORCOMMENT;break;
+                        case '/':state = OVERORCOMMENT;token.push_back(nextch);break;
 
                         case '{':thisToken = LBRACE;state = DONE;break;
                         case '}':thisToken = RBRACE;state = DONE;break;
@@ -256,8 +250,15 @@ TokenType getToken(std::ifstream &f){
             case OVERORCOMMENT:{
                 if(nextch == '*'){
                     f.get();
-                    state = INCOMMENT;
-                    thisToken = COMMENT;
+                    token.push_back(nextch);
+                    state = INMULTICOMMENT;
+                    thisToken = MULTICOMMENT;
+                }
+                else if(nextch == '/'){
+                    f.get();
+                    token.push_back(nextch);
+                    state = INSINGLECOMMENT;
+                    thisToken = SINGLECOMMENT;
                 }
                 else{
                     thisToken = OVER;
@@ -266,8 +267,49 @@ TokenType getToken(std::ifstream &f){
             }
             break;
 
-            case INCOMMENT:{
-                //TODO
+            case INMULTICOMMENT:{
+                if(nextch == EOF){
+                    thisToken = MULTICOMMENT;
+                    state = DONE;
+                }
+                else{
+                    f.get();
+                    token.push_back(nextch);
+                    if(nextch == '*'){
+                        thisToken = MULTICOMMENT;
+                        state = ENDMULTICOMMENT;
+                    }
+                }
+            }
+            break;
+
+            case ENDMULTICOMMENT:{
+                if(nextch == EOF){
+                    thisToken = MULTICOMMENT;
+                    state = DONE;
+                }
+                else{
+                    f.get();
+                    token.push_back(nextch);
+                    if(nextch == '/'){
+                        state = DONE;
+                    }
+                    else{
+                        state = INMULTICOMMENT;
+                    }
+                }
+            }
+            break;
+
+            case INSINGLECOMMENT:{
+                if(nextch == EOF || nextch == '\n'){
+                    thisToken = SINGLECOMMENT;
+                    state = DONE;
+                }
+                else{
+                    f.get();
+                    token.push_back(nextch);
+                }
             }
             break;
 
