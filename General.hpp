@@ -10,14 +10,10 @@
 
 extern bool PRINTTOKEN;
 
-// const int MAXTOKENLEN = 40;
-
-// char tokenString[MAXTOKENLEN+1];
-
 typedef enum{
-    // keywords
+    // reserved words
     IF, ELSE, INT, DOUBLE,STRING,RETURN,VOID,WHILE,
-    // const and variable
+    // constant and variable
     ID, INT_NUM,CONST_STRING, DOUBLE_NUM,
     // operators
     ASSIGN,EQ,LT,GT,LEQ,GEQ,NEQ,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,LBRACE,RBRACE,LSQBRAC,RSQBRAC,SEMI,COMMA,
