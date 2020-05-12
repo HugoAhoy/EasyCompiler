@@ -2,17 +2,19 @@
 ## 文法
 program --> stmt-sequence
 
-stmt-sequence --> stmt **;** {stmt **;** }
+stmt-sequence --> stmt **;** {block} 
+
+block --> **{** stmt-sequence **}** | stmt
 
 stmt --> if-stmt|for-stmt| while-stmt| assign-stmt| declare-stmt
 
-if-stmt --> **if** **(** exp **)** **{** stmt-sequence **}**[ **else** **{** stmt-sequence **}**]
+if-stmt --> **if** **(** exp **)** block [ **else** **{** stmt-sequence **}**]
 
-for-stmt --> **for** **(** declare-stmt **;** stmt **;** stmt  **)** **{** stmt-sequence **}**
+for-stmt --> **for** **(** declare-stmt **;** exp **;** stmt **)** block
 
-while-stmt --> **while** **(** exp **)** **{** stmt-sequence **}**
+while-stmt --> **while** **(** exp **)** block
 
-assign-stmt --> **id** **=** exp
+assign-stmt --> **id** **=** exp **;**
 
 exp --> simple-exp [comparison-op simple-exp]
 
@@ -28,4 +30,4 @@ add-op --> **+** | **-**
 
 mul-op --> **/** | **\***
 
-declare-stmt --> **type** **id**
+declare-stmt --> **type** **id** **;**

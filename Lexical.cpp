@@ -6,9 +6,10 @@ inline void out(const char* str){
 
 std::vector<ReservedWord> Dict={{"if",IF},{"else",ELSE},
       {"int",INT},{"double",DOUBLE},{"string", STRING},
-      {"return",RETURN},{"void",VOID},{"while",WHILE}};
+      {"return",RETURN},{"void",VOID},{"while",WHILE},
+      {"for",FOR}};
 
-static void printToken(const std::vector<char> &t, TokenType tt){
+void printToken(const std::vector<char> &t, TokenType tt){
     int s = t.size();
     switch (tt){
         case IF:std::cout<< "reserved word: if\n";break;
@@ -61,6 +62,8 @@ static void printToken(const std::vector<char> &t, TokenType tt){
     }
 }
 
+
+
 bool cmp(const std::vector<char> &token, const char* reserved){
     int s = token.size();
     for(int i = 0; i < s; i++){
@@ -82,7 +85,7 @@ static void isReservedWord(TokenType &tt, const std::vector<char> &token){
     }
 }
 
-TokenType getToken(std::ifstream &f){
+Token getTokenWithInfo(std::ifstream &f){
     static std::vector<char> token;
     static char nextch;
     token.clear();
@@ -94,12 +97,12 @@ TokenType getToken(std::ifstream &f){
             if(nextch == ' ' || nextch == '\n' || nextch == '\t'){
                 if(state == START){
                     f.get();
-                    return BLANKCHAR;
+                    return Token(BLANKCHAR,"");
                 }
             }
         }
         else if(state == START){            
-            return ENDOFFILE;
+            return {ENDOFFILE,""};
         }
         switch (state){
             case START:{
@@ -146,7 +149,7 @@ TokenType getToken(std::ifstream &f){
                         case '!':state = INNEQ;break;
                         
                         default:
-                            return ERROR;
+                            return Token(ERROR,"");
                     }
                 }
                 f.get();
@@ -204,7 +207,7 @@ TokenType getToken(std::ifstream &f){
                     state = DONE;
                 }
                 else{
-                    return ERROR;
+                    return Token(ERROR,"");
                 }
 
             }
@@ -364,5 +367,26 @@ TokenType getToken(std::ifstream &f){
     if(PRINTTOKEN){
         printToken(token, thisToken);
     }
-    return thisToken;
+    std::string name = "";
+    int s = token.size();
+    for(int i = 0; i < s; i ++){
+        name = name + token[i];
+    }
+    return Token(thisToken,name);
+}
+
+Token getTokenWithoutBlank(std::ifstream &fin){
+    Token token = getTokenWithInfo(fin);
+    while(token.type == BLANKCHAR){
+        token = getTokenWithInfo(fin);
+    }
+    return token;
+}
+
+TokenType getToken(std::ifstream &fin){
+    TokenType token = getTokenWithInfo(fin).type;
+    while(token == BLANKCHAR || token == MULTICOMMENT || token == SINGLECOMMENT){
+        token = getTokenWithInfo(fin).first;
+    }
+    return token;
 }
