@@ -6,5 +6,5 @@
 TokenType getToken(std::ifstream &f);
 Token getTokenWithInfo(std::ifstream &fin);
 Token getTokenWithoutBlank(std::ifstream &fin);
-void printToken(const std::vector<char> &t, TokenType tt)
+void printToken(const std::vector<char> &t, TokenType tt);
 #endif

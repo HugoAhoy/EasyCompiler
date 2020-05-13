@@ -2,19 +2,21 @@
 ## 文法
 program --> stmt-sequence
 
-stmt-sequence --> stmt **;** {block} 
+stmt-sequence --> block {block} 
 
 block --> **{** stmt-sequence **}** | stmt
 
-stmt --> if-stmt|for-stmt| while-stmt| assign-stmt| declare-stmt
+stmt --> if-stmt|for-stmt| while-stmt| assign-stmt **;**| declare-stmt **;**
 
 if-stmt --> **if** **(** exp **)** block [ **else** **{** stmt-sequence **}**]
 
-for-stmt --> **for** **(** declare-stmt **;** exp **;** stmt **)** block
+for-stmt --> **for** **(** declare-stmt **;** exp **;** assign-stmt **)** block
 
 while-stmt --> **while** **(** exp **)** block
 
-assign-stmt --> **id** **=** exp **;**
+assign-stmt --> var **=** exp | var **=** address
+
+address --> **&** **id**
 
 exp --> simple-exp [comparison-op simple-exp]
 
@@ -22,7 +24,7 @@ simple-exp --> term {add-op term}
 
 term --> fator {mul-op factor}
 
-facotr --> **(** exp **)** | **number** | **id**
+facotr --> **(** exp **)** | **number** | var
 
 comparison-op --> **<** |**<=** |**>** |**>=** |**==** |**!=**
 
@@ -30,4 +32,8 @@ add-op --> **+** | **-**
 
 mul-op --> **/** | **\***
 
-declare-stmt --> **type** **id** **;**
+declare-stmt --> **type** var-declare
+
+var --> **id** {**[** exp **]**}
+
+var-declare --> **id**[**=** exp] | {**\***} **id**| **id** **[** exp **]** {**[** exp **]**}

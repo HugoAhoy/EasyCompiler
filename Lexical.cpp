@@ -14,6 +14,7 @@ void printToken(const std::vector<char> &t, TokenType tt){
     switch (tt){
         case IF:std::cout<< "reserved word: if\n";break;
         case ELSE:std::cout<< "reserved word: else\n";break;
+        case FOR:std::cout<< "reserved word: for\n";break;
         case INT:std::cout<< "reserved word: int\n";break;
         case DOUBLE:std::cout<< "reserved word: double\n";break;
         case STRING:std::cout<< "reserved word: string\n";break;
@@ -142,6 +143,7 @@ Token getTokenWithInfo(std::ifstream &f){
                         case '+':thisToken = PLUS;state = DONE;break;
                         case '-':thisToken = MINUS;state = DONE;break;
                         case '*':thisToken = TIMES;state = DONE;break;
+                        // case '&':thisToken = AND_LOGIC;state = DONE; break;
 
                         case '=':state = ASSIGNOREQ;break;
                         case '<':state = LTORLEQ;break;
@@ -372,12 +374,13 @@ Token getTokenWithInfo(std::ifstream &f){
     for(int i = 0; i < s; i ++){
         name = name + token[i];
     }
+    // std::cout << name << std::endl;
     return Token(thisToken,name);
 }
 
 Token getTokenWithoutBlank(std::ifstream &fin){
     Token token = getTokenWithInfo(fin);
-    while(token.type == BLANKCHAR){
+    while(token.type == BLANKCHAR || token.type == MULTICOMMENT || token.type == SINGLECOMMENT){
         token = getTokenWithInfo(fin);
     }
     return token;
@@ -386,7 +389,7 @@ Token getTokenWithoutBlank(std::ifstream &fin){
 TokenType getToken(std::ifstream &fin){
     TokenType token = getTokenWithInfo(fin).type;
     while(token == BLANKCHAR || token == MULTICOMMENT || token == SINGLECOMMENT){
-        token = getTokenWithInfo(fin).first;
+        token = getTokenWithInfo(fin).type;
     }
     return token;
 }

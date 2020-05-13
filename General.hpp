@@ -32,7 +32,6 @@ typedef struct
       TokenType tokentype;
     } ReservedWord;
 
-typedef enum {StmtK,ExpK} NodeKind;
 typedef enum {IfStmt,ForStmt,WhileStmt,AssignStmt,DeclareStmt} StmtKind;
 typedef enum {OpExp,ConstExp,IdExp} ExpKind;
 
@@ -44,6 +43,10 @@ typedef struct Token{
 
 typedef struct TreeNode{
     bool isStmt;
+    bool isArr;
+    bool isPointer;
+    int arrayDim;
+    int pointerDim;
     TreeNode *sibling;
     std::vector<TreeNode*> offspring; 
     union { StmtKind stmt; ExpKind exp;} kind;
@@ -51,6 +54,7 @@ typedef struct TreeNode{
     int val;
     std::string name;
     TokenType DeclareType;
+    TreeNode():isStmt(true), sibling(nullptr), isPointer(false), isArr(false),arrayDim(0), pointerDim(0){}
     //  ExpType type; /* for type checking of exps */
 }TreeNode;
 

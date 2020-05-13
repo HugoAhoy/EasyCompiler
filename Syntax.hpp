@@ -14,8 +14,10 @@ TreeNode * simple_exp(std::ifstream &fin, Token &token);
 TreeNode * term(std::ifstream &fin, Token &token);
 TreeNode * factor(std::ifstream &fin, Token &token);
 TreeNode * declare_stmt(std::ifstream &fin, Token &token);
-TreeNode *block(std::ifstream &fin, Token &token)
+TreeNode *block(std::ifstream &fin, Token &token);
+TreeNode *parse(std::ifstream &fin);
 void match(std::ifstream &fin, Token &token);
-void syntaxError(const char * str);
+void syntaxError(std::string err);
+void Traverse(TreeNode *root, int level);
 
 #endif // !_SYNTAX_HPP_
